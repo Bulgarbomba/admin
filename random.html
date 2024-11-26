@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks for CS2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818; /* Темный фон */
+            color: #ffffff; /* Белый текст */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column; /* Упорядочиваем элементы сверху вниз */
+            align-items: flex-start; /* Выравнивание по левому краю */
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Все элементы на одном уровне */
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #content {
+            width: 60%;
+            max-width: 2500px; /* Ограничиваем максимальную ширину */
+            padding: 20px;
+            background-color: #2a2a2a; /* Темный фон для контента */
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin-left: 20px; /* Смещение блока влево */
+        }
+
+        h1, h2 {
+            margin-top: 0;
+            text-align: center; /* Заголовок теперь выровнен по левому краю */
+        }
+
+        #phrases {
+            background-color: #333333; /* Темный фон для фраз */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff; /* Синий цвет для кнопок */
+            color: white;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Темнее при наведении */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Уменьшенный блок "Completed Tasks" */
+        #completedTasks {
+            width: 25%; /* Уменьшаем ширину */
+            background-color: #2a2a2a; /* Фон таблицы */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .task {
+            margin-bottom: 10px;
+        }
+
+        .task p {
+            margin: 0;
+        }
+
+        .task-slider {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .task-indicator {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Таблица с выполненными заданиями -->
+        <table id="completedTasks">
+            <thead>
+                <tr>
+                    <th>Completed Tasks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Завершенные задания будут добавлены сюда -->
+            </tbody>
+        </table>
+
+        <!-- Основной контент -->
+        <div id="content">
+            <h1>Tasks for CS2</h1>
+
+            <div id="phrases"></div>
+
+            <button onclick="markAsDone()">Done</button>
+            <button onclick="generatePhrases()">Create Tasks</button>
+            <button onclick="clearTasks()">Clear Tasks</button>
+        </div>
+    </div>
+
+    <script>
+        const phrases = [
+            "Plant the Bomb",
+            "Defuse the Bomb",
+            "Get a Headshot",
+            "Make a Kill with AWP",
+            "Win a Round as Terrorists",
+            "Win a Round as Counter-Terrorists",
+            "Use Utility Effectively",
+            "Ace",
+            "Survive a Round",
+            "Kill with a Knife",
+            "Get a Kill with a Grenade",
+            "Plant the Bomb in Under 20 Seconds",
+            "Drop a Weapon for a Teammate",
+            "Spy Check",
+            "Control the Mid",
+            "Force Buy",
+            "Flank the Enemy"
+        ];
+
+        let selectedPhrases = [];
+
+        function getRandomItems(array, num) {
+            const shuffled = array.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, num);
+        }
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generatePhrases() {
+            selectedPhrases = getRandomItems(phrases, 5);
+            document.getElementById("phrases").innerHTML = selectedPhrases.map(phrase => {
+                const randomNum = getRandomNumber(2, 10);
+                return `
+                    <div class="task">
+                        <p>${phrase} - ${randomNum}</p>
+                        <input type="range" class="task-slider" min="0" max="${randomNum}" value="0" oninput="updateSliderValue(this)">
+                        <div class="task-indicator">0 / ${randomNum}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateSliderValue(slider) {
+            const indicator = slider.nextElementSibling;
+            indicator.textContent = `${slider.value} / ${slider.max}`;
+
+            if (slider.value == slider.max) {
+                const task = slider.parentElement;
+                task.querySelector("p").classList.add("strikethrough");
+            } else {
+                const task = slider.parentElement;
+                task.querySelector("p").classList.remove("strikethrough");
+            }
+        }
+
+        function markAsDone() {
+            const tableBody = document.getElementById("completedTasks").getElementsByTagName("tbody")[0];
+
+            selectedPhrases.forEach(phrase => {
+                const randomNum = getRandomNumber(2, 10);
+                const newRow = tableBody.insertRow();
+                const newCell = newRow.insertCell(0);
+                newCell.textContent = `${phrase} - ${randomNum}`;
+            });
+
+            selectedPhrases = [];
+            document.getElementById("phrases").innerHTML = '';
+        }
+
+        function clearTasks() {
+            const tableBody = document.getElementById("completedTasks").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = '';
+        }
+    </script>
+
+</body>
+</html>
